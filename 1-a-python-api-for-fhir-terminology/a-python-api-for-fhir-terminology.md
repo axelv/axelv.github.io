@@ -1,4 +1,9 @@
-# Using FHIR Terminology your Python workflow
+---
+layout: page
+title: Using FHIR Terminology in your Python data analysis workflow
+permalink: /posts/1-a-python-api-for-fhir-terminology
+---
+# Using FHIR Terminology your Python data analysis workflow
 
 ## Introduction
 
