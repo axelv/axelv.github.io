@@ -1,6 +1,5 @@
 theme: minima
 title: Toughts about tech.
 description: A collection of posts about technical stuff I'm currently working on.
-author:
-  name: Axel Vanraes
-  email: axelvanraes+blog@gmail.com
+future: false
+author: Axel Vanraes
