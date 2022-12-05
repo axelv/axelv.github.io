@@ -1,3 +1,8 @@
+---
+layout: post
+title: "7 principles to build effective data pipelines"
+---
+
 # Principles for data dipelines
 
 Data pipelines are hard. Like every piece of software they fail, especially when the pipeline is in early development or the environment is changing rapidly. And on top of that development iterations are slow because of the execution time the pipeline takes. To speed up things most data pipelines make use of some form of multiprocessing which makes them even harder debug. To tackle these issues we want the be able to reëxecute parts of a data pipeline. This means (1) splitting the pipeline in pieces with a clear signature that enables us to re-run them seperatly and (2) persisting intermediate results so we can re-execute that part of the pipeline where things went wrong.

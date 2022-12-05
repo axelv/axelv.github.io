@@ -1,3 +1,8 @@
+---
+layout: post
+title: How to adopt FHIR Terminology in your Python data analysis toolbox.
+---
+
 # Using FHIR Terminology your Python workflow
 
 ## Introduction

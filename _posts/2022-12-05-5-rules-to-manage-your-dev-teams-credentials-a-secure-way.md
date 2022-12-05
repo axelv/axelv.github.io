@@ -1,3 +1,8 @@
+---
+layout: post
+title: "How to manage credentials and secrets on MacOS"
+---
+
 # How to manage credentials and secrets on MacOS
 
 **Note:** Credentials can be anything that authenticates you or grants access to a sensitive system. Ex: API keys, username-password combinations, private-public keys, certificates
