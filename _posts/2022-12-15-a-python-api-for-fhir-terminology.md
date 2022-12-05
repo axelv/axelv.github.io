@@ -2,6 +2,7 @@
 layout: post
 title: How to adopt FHIR Terminology in your Python data analysis toolbox.
 permalink: /posts/fhir-tx-python
+hidden: true
 ---
 
 # Using FHIR Terminology your Python workflow
