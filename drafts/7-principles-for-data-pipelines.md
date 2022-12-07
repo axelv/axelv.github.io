@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "7 principles to build effective data pipelines"
-permalink: /posts/principles-for-data-scientists
+permalink: /drafts/principles-for-data-scientists
 ---
 
 # Principles for data dipelines
