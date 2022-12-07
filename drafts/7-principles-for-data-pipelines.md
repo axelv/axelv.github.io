@@ -1,7 +1,7 @@
 ---
+title: ""
 layout: post
 permalink: /drafts/principles-for-data-scientists
-exclude: true
 ---
 
 # Principles for data dipelines

@@ -1,7 +1,7 @@
 ---
+title: ""
 layout: post
 permalink: /posts/fhir-tx-python
-exclude: true
 ---
 
 # Using FHIR Terminology your Python workflow
