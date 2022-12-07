@@ -2,7 +2,6 @@
 layout: post
 title: "7 principles to build effective data pipelines"
 permalink: /posts/principles-for-data-scientists
-hidden: true
 ---
 
 # Principles for data dipelines
