@@ -1,6 +1,5 @@
 ---
 layout: post
-title: "How to manage credentials and secrets on MacOS"
 permalink: /posts/credentials-mac-os
 exclude: true
 ---
