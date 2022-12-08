@@ -6,37 +6,37 @@ permalink: /drafts/fhir-tx-python
 
 # Using FHIR Terminology your Python workflow
 
-## Introduction
+[FHIR Terminology](https://hl7.org/fhir/terminology-module.html) is a powerful tool for healthcare innovators and software developers, but it can be difficult to integrate into a Python data analysis workflow. One issue is that FHIR Terminology is a REST API, which means that using it often involves making a lot of HTTP calls using a library like [requests](https://requests.readthedocs.io). These calls can add technical details to your code that don't contribute to your analysis, and can make your code harder to read.
 
-- FHIR Terminology has some wonderfull features but as a data scientist it's hard to use it in my analysis workflow.
-- First of all, FHIR Terminology is a REST API and this means lots of [HTTP calls using the `requests` library](https://requests.readthedocs.io/en/latest/). Calls to a REST API involve some technical details that do not contribute to the data analysis we are making. It's only polluting the code readability.
-- Secondly, FHIR Resources are tranfered in JSON and in Python we decode this to dictionaries. Dictionaries are usefull for small temporary data structures but FHIR Resources are way to big to put in a dictionary. I don't know by heart which keys their are available in a ValueSet dictionary. Instead, we want to have dedicated class objects with attributes that help us accessing the attributes we need.
+Another problem is that [FHIR Resources are transferred in JSON format](https://hl7.org/fhir/json.html) (or XML), which means that in Python, you need to decode them into dictionaries. While dictionaries are useful for small data structures, FHIR Resources can be quite large, and working with dictionaries can make it hard to access the data you need.
 
-**If we want to integrate FHIR Terminology into our workflow, we need validated typed objects for all the FHIR resources and elements related to terminology. And we want operations on those elements to translate to Python operators or functions.**
+To make it easier to use FHIR Terminology in your workflow, you need a way to work with _validated, typed objects_ for all the FHIR resources and elements related to terminology. And you want operations on these elements to be easy to perform using _Python operators_ or functions.
 
-## Important aspects FHIR Terminology
+In this blog post, we'll explore some ways to integrate FHIR Terminology into your Python workflow, and make it easier to use in your data analysis projects.
 
-Before goinging into the details of how we handle terminology in Python, let's discuss the most important data structures related FHIR Terminology
+## Key data structures and operations in FHIR Terminology
+
+FHIR Terminology is a complex topic, with many different data structures and operations that are important to understand. In this section, we'll go over some of the most important aspects of FHIR Terminology, and how they can be used in your Python workflow.
 
 ### Coding
 
-A Coding is a the most basic structure refering to a single code that is part of a CodeSystem. An example of such a code is [`386661006 |Fever|` from SNOMED-CT](https://browser.ihtsdotools.org/?perspective=full&conceptId1=386661006&edition=MAIN&release=&languages=en). This can be respresented using a FHIR Coding:
+A Coding is the most basic structure used in FHIR Terminology. It refers to a single code that is part of a CodeSystem. For example, the SNOMED-CT code for "fever" is 386661006 |Fever|, and it can be represented using a FHIR Coding like this:
 
-```fhir+json
+```json
 {
-    system: "http://snomed.info/sct",
-    code: "386661006",
-    display: "Fever"
+  "system": "http://snomed.info/sct",
+  "code": "386661006",
+  "display": "Fever"
 }
 ```
 
-More info on the meaning of the individual fields in the [FHIR documentation](https://build.fhir.org/datatypes.html#Coding).
+You can find more information about the fields in a Coding in the FHIR documentation.
 
 ### CodeableConcept
 
-Often it's hard to represent the meaning of reallife medical concepts using exact _Codings_ and you want to combine it with some nuanced text. This is were the **CodeableConcept** comes in:
+Sometimes it's difficult to represent the meaning of real-world medical concepts using exact Codings, and you need to combine them with some additional text. That's where the CodeableConcept comes in. It allows you to combine a Coding with a free-text description, like this:
 
-```fhir+json
+```
 {
     text: "Light fever",
     coding: [
@@ -49,22 +49,33 @@ Often it's hard to represent the meaning of reallife medical concepts using exac
 }
 ```
 
-More info on the meaning of the individual fields in the [FHIR documentation](https://build.fhir.org/datatypes.html#CodeableConcept).
+You can find more information about the fields in a CodeableConcept in the FHIR documentation.
 
 ### CodeSystem
 
-#### Operations:
+A CodeSystem is a collection of codes that can be used to represent concepts in a particular domain. For example, SNOMED-CT is a CodeSystem that contains codes for medical concepts.
+CodeSystem resources are a little too large to embed in this, but there are some intersting examples on the FHIR website: [AllergyIntoleranceCertainty](https://terminology.hl7.org/CodeSystem-reaction-event-certainty.json.html), [SNOMED-CT](https://terminology.hl7.org/CodeSystem-v3-snomed-CT.json.html), [LOINC](https://terminology.hl7.org/CodeSystem-v3-loinc.json.html), [ICD-19](https://terminology.hl7.org/CodeSystem-icd10.json.html)
 
-- subsumtion
-- validate-code
-- lookup
+There are several operations that you can perform on a CodeSystem, including:
+
+- [**Subsumption**](http://hl7.org/fhir/codesystem-operation-subsumes.html): This operation allows you to check whether one code in the CodeSystem is a more specific version of another code. For example, you could use it to check whether the code for "fever" is a more specific version of the code for "illness".
+- [**Validate code**](http://hl7.org/fhir/codesystem-operation-validate-code.html): This operation allows you to check whether a given code is part of the CodeSystem. You can use it to ensure that the codes you're using in your analysis are valid.
+- [**Lookup code**](http://hl7.org/fhir/codesystem-operation-lookup.html): This operation allows you to look up the details of a code in the CodeSystem, such as its description and its relationships to other codes.
 
 ### ValueSet
 
-#### Operations:
+A ValueSet is a collection of codes from one or more CodeSystems that are used to represent a particular set of concepts. For example, you could create a ValueSet that contains codes for all the diagnostic codes in SNOMED-CT.
 
-- expand
-- validate-code
+There are several operations that you can perform on a ValueSet, including:
+
+- [**Expand**](http://hl7.org/fhir/valueset-operation-expand.html): This operation allows you to expand a ValueSet to include all the codes that are part of the set, along with their descriptions and relationships to other codes. This can be useful if you want to see the full details of the codes in the ValueSet.
+- [**Validate Code**](http://hl7.org/fhir/valueset-operation-validate-code.html): This operation is similar to the _validate code_ operation on a CodeSystem, but it allows you to check whether a code is part of a particular ValueSet, rather than just the CodeSystem it belongs to. This can be useful if you want to ensure that the codes you're using in your analysis are part of the specific ValueSet you're working with.
+
+In summary, the Coding, CodeableConcept, CodeSystem, and ValueSet data structures are some of the most important aspects of FHIR Terminology. Understanding these data structures and the operations you can perform on them will be crucial when integrating FHIR Terminology into your Python workflow.
+
+---
+
+⬇️ TO BE COMPLETED
 
 ## Parsing data using Pydantic
 
