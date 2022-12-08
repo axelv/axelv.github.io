@@ -1,7 +1,7 @@
 ---
 title: ""
 layout: post
-permalink: /posts/fhir-tx-python
+permalink: /drafts/fhir-tx-python
 ---
 
 # Using FHIR Terminology your Python workflow

@@ -1,7 +1,7 @@
 ---
 title: ""
 layout: post
-permalink: /posts/credentials-mac-os
+permalink: /drafts/credentials-mac-os
 ---
 
 # How to manage credentials and secrets on MacOS
