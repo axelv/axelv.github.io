@@ -10,7 +10,7 @@ permalink: /drafts/fhir-tx-python
 
 Another problem is that [FHIR Resources are transferred in JSON format](https://hl7.org/fhir/json.html) (or XML), which means that in Python, you need to decode them into dictionaries. While dictionaries are useful for small data structures, FHIR Resources can be quite large, and working with dictionaries can make it hard to access the data you need.
 
-To make it easier to use FHIR Terminology in your workflow, you need a way to work with _validated, typed objects_ for all the FHIR resources and elements related to terminology. And you want operations on these elements to be easy to perform using _Python operators_ or functions.
+To make it easier to use FHIR Terminology in your workflow, you need a way to work with **validated, typed objects** for all the FHIR resources and elements related to terminology. And you want operations on these elements to be easy to perform using **Python operators** or functions.
 
 In this blog post, we'll explore some ways to integrate FHIR Terminology into your Python workflow, and make it easier to use in your data analysis projects.
 
