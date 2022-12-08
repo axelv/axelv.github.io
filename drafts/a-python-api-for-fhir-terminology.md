@@ -20,7 +20,7 @@ FHIR Terminology is a complex topic, with many different data structures and ope
 
 ### Coding
 
-A Coding is the most basic structure used in FHIR Terminology. It refers to a single code that is part of a CodeSystem. For example, the SNOMED-CT code for "fever" is 386661006 |Fever|, and it can be represented using a FHIR Coding like this:
+A Coding is the most basic structure used in FHIR Terminology. It refers to a single code that is part of a CodeSystem. For example, the SNOMED-CT code for "fever" is `386661006 |Fever|`, and it can be represented using a FHIR Coding like this:
 
 ```json
 {
