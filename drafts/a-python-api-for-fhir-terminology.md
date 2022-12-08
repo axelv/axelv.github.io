@@ -4,7 +4,7 @@ layout: post
 permalink: /drafts/fhir-tx-python
 ---
 
-# Using FHIR Terminology your Python workflow
+## Using FHIR Terminology your Python workflow
 
 [FHIR Terminology](https://hl7.org/fhir/terminology-module.html) is a powerful tool for healthcare innovators and software developers, but it can be difficult to integrate into a Python data analysis workflow. One issue is that FHIR Terminology is a REST API, which means that using it often involves making a lot of HTTP calls using a library like [requests](https://requests.readthedocs.io). These calls can add technical details to your code that don't contribute to your analysis, and can make your code harder to read.
 
@@ -14,11 +14,11 @@ To make it easier to use FHIR Terminology in your workflow, you need a way to wo
 
 In this blog post, we'll explore some ways to integrate FHIR Terminology into your Python workflow, and make it easier to use in your data analysis projects.
 
-## Key data structures and operations in FHIR Terminology
+### Key data structures and operations in FHIR Terminology
 
 FHIR Terminology is a complex topic, with many different data structures and operations that are important to understand. In this section, we'll go over some of the most important aspects of FHIR Terminology, and how they can be used in your Python workflow.
 
-### Coding
+#### Coding
 
 A Coding is the most basic structure used in FHIR Terminology. It refers to a single code that is part of a CodeSystem. For example, the SNOMED-CT code for "fever" is `386661006 |Fever|`, and it can be represented using a FHIR Coding like this:
 
@@ -32,7 +32,7 @@ A Coding is the most basic structure used in FHIR Terminology. It refers to a si
 
 You can find more information about the fields in a Coding in the FHIR documentation.
 
-### CodeableConcept
+#### CodeableConcept
 
 Sometimes it's difficult to represent the meaning of real-world medical concepts using exact Codings, and you need to combine them with some additional text. That's where the CodeableConcept comes in. It allows you to combine a Coding with a free-text description, like this:
 
@@ -51,7 +51,7 @@ Sometimes it's difficult to represent the meaning of real-world medical concepts
 
 You can find more information about the fields in a CodeableConcept in the FHIR documentation.
 
-### CodeSystem
+#### CodeSystem
 
 A CodeSystem is a collection of codes that can be used to represent concepts in a particular domain. For example, SNOMED-CT is a CodeSystem that contains codes for medical concepts.
 CodeSystem resources are a little too large to embed in this, but there are some intersting examples on the FHIR website: [AllergyIntoleranceCertainty](https://terminology.hl7.org/CodeSystem-reaction-event-certainty.json.html), [SNOMED-CT](https://terminology.hl7.org/CodeSystem-v3-snomed-CT.json.html), [LOINC](https://terminology.hl7.org/CodeSystem-v3-loinc.json.html), [ICD-19](https://terminology.hl7.org/CodeSystem-icd10.json.html)
@@ -62,7 +62,7 @@ There are several operations that you can perform on a CodeSystem, including:
 - [**Validate code**](http://hl7.org/fhir/codesystem-operation-validate-code.html): This operation allows you to check whether a given code is part of the CodeSystem. You can use it to ensure that the codes you're using in your analysis are valid.
 - [**Lookup code**](http://hl7.org/fhir/codesystem-operation-lookup.html): This operation allows you to look up the details of a code in the CodeSystem, such as its description and its relationships to other codes.
 
-### ValueSet
+#### ValueSet
 
 A ValueSet is a collection of codes from one or more CodeSystems that are used to represent a particular set of concepts. For example, you could create a ValueSet that contains codes for all the diagnostic codes in SNOMED-CT.
 
