@@ -6,7 +6,7 @@ permalink: /drafts/fhir-tx-python
 
 ## Using FHIR Terminology your Python workflow
 
-[FHIR Terminology](https://hl7.org/fhir/terminology-module.html) is a powerful tool for healthcare innovators and software developers, but it can be difficult to integrate into a Python data analysis workflow. One issue is that FHIR Terminology is a REST API, which means that using it often involves making a lot of HTTP calls using a library like [requests](https://requests.readthedocs.io). These calls can add technical details to your code that don't contribute to your analysis, and can make your code harder to read.
+[FHIR Terminology](https://hl7.org/fhir/terminology-module.html) is a powerful tool for healthcare innovators and software developers, but it can be difficult to integrate into a Python data analysis workflow. One issue is that FHIR Terminology is a REST API, which means that using it in a Python script often involves making a lot of HTTP calls using a library like [requests](https://requests.readthedocs.io). These calls can add technical details to your code that don't contribute to your analysis, and can make your code harder to read.
 
 Another problem is that [FHIR Resources are transferred in JSON format](https://hl7.org/fhir/json.html) (or XML), which means that in Python, you need to decode them into dictionaries. While dictionaries are useful for small data structures, FHIR Resources can be quite large, and working with dictionaries can make it hard to access the data you need.
 
@@ -16,7 +16,8 @@ In this blog post, we'll explore some ways to integrate FHIR Terminology into yo
 
 ### Key data structures and operations in FHIR Terminology
 
-> Skip this section if you are familiar with the FHIR Terminology specification.
+> The follow is pure review of resources and operations defined in the FHIR Terminology spec.
+> Feel free to skip this section if you are familiar with this.
 
 FHIR Terminology is a complex topic, with many different data structures and operations that are important to understand. In this section, we'll go over some of the most important aspects of FHIR Terminology, and how they can be used in your Python workflow.
 
@@ -81,72 +82,134 @@ In summary, the Coding, CodeableConcept, CodeSystem, and ValueSet data structure
 
 ## Parsing data using Pydantic
 
-First we need a convenient way to parse FHIR/JSON into validated typed Python objects. A great package to parse JSON with predefined data models in Python is Pydantic. Even better, somebody has already written the models for FHIR STU3 and FHIR R4. We only need to `pip install fhir.resources` and we can start importing FHIR/JSON into our Python code.
+First we need a convenient way to parse FHIR/JSON into validated typed Python objects. A great package to parse JSON with predefined data models in Python is Pydantic. There are a couple of initiatives that have already build such models for FHIR. At [Tiro.health](https://tiro.health) we've been working on [FHIRkit](https://github.com/Tiro-health/fhirkit). But there are other promissing initiatives like [fhir.resources](https://github.com/nazrulworld/fhir.resources).
 
-No when fetching ValueSet resource from a FHIR server, we can immediatly parse the response into a validated, typed Python object:
+No when fetching a ValueSet resource from a FHIR server, we can immediatly parse the response into a validated, typed Python object:
 
 ```python
 import requests
-from fhir.resources.valueset import ValueSet
+from fhir_tx.valueset import ValueSet
 
-response = requests.get("http://tx.fhir.org/r4/ValueSet/adverse-event-outcome")
+valueset_url = "http://tx.fhir.org/r4/ValueSet/adverse-event-outcome"
+response = requests.get(valueset_url)
 vs_adverse_event_outcome = ValueSet.parse_obj(response.json())
 print("Received ValueSet with name: ", vs_adverse_event_outcome.name)
 ```
 
-## Operations as operators
+## CRUD operations
 
-Next we want to perform terminology operations on these resources without having to perform manual HTTP Requests to the server. We rather want to leverage operator overloading and make the operations on ValueSets and CodeSystems more Pythonic.
-
-### FHIR Terminology server context
-
-When working with Python operators, we specify the operations directly without specifying the FHIR Server. In order to indicate the FHIR Terminology server that needs to execute the operations, we will leverage Python context managers:
+In order to make it easier to perform CRUD operations let's abstract this away by implementing a client that implements the `__getitem__` method:
+Hiding away
 
 ```python
-with FHIRTerminologyClient("<base-url-of-fhir-server>") as client:
-  # ... here come the operations we want to execute
+fhir_tx = FHIRTerminologyClient("http://tx.fhir/torg/r4")
+vs_adverse_event_outcome = fhir_tx.ValueSet["adverse-event-outcome"] # read the ValueSet given it's id
+fhir_tx.ValueSet["adverse-event-outcome"] = vs_adverse_event_outcome # create or update ValueSet
+del fhir_tx.ValueSet["adverse-event-outcome"] # remove ValueSet
 ```
 
-### Subsumption
+The above abstractions allows to reuse the same fetch logic and base URL easily. It also creates place where you can put more advance validation and exception handling logic.
 
-The `$subsumes` api accepts two codes (code A and code B) and returns a relationship code indicating if there is a sumsumtion relationship, equivalence or both codes are completely disjoint. For a Python point of view, this looks like a simple operation between two objects.
+## Operations as operators
 
-We can turn this in the following Python code:
+Next we want to perform terminology operations on these resources without having to build HTTP Requests manually. Moreover, it becomes tedious if we need to specify FHIR server for each operation in script where we want to perform a whole sequence of operations. In the next sections we will leverage [OOP](https://en.wikipedia.org/wiki/Object-oriented_programming) and operator overloading in Python and make the operations on ValueSets and CodeSystems more efficiant (in lines of code), readable and Pythonic.
+
+Let's go through each FHIR operation and formulate a matching Pythonic equivalent.
+
+### CodeSystem -- `$subsumes`
+
+The `$subsumes` api accepts two codes (code A and code B) and returns a relationship code indicating if there is a sumsumtion relationship, equivalence or both codes are completely disjoint. A logical Pythonic way to express this operation is a simple boolen expression between two objects.
+
+We can turn subsumption in the following Python code:
 
 ```python
-# indicate the terminology server that should be used to execute the operations
-with FHIRTerminologyClient("<base-url-to-fhir-terminology>") as fhir_tx_client:
-  chronic_fever == new SCTCoding("704425001 |Chronic fever|")
-  fever = SCTCoding("704425001 |Fever|")
+  chronic_fever == new SCTCoding.from_sct("704425001 |Chronic fever|")
+  fever = new SCTCoding.from_sct("704425001 |Fever|")
+
   assert chronic_fever < ferver, "Expected 'Chronic fever' to be a child of 'Fever'"
 
 ```
 
-Note we introduced a little twist to the `$subsumes` API in our Python translation. We immediatly test for a specific operation which results in a boolean value. This comes down to comparing the relationship in the response of the `$subsumes` API to the presumed relationship that is implied by the Python-operator.
+There are several things to note here:
+
+1. We implemented a Pydantic model for codings and added some convenience methods that parse a SNOMED-CT notation string.
+2. We've introduced a little twist to the `$subsumes` API in our Python translation. Instead of returning the hierarchical relation, we immediatly test for a specific relation and return a boolean value. This comes down to comparing the relationship in the response of the `$subsumes` API to the presumed relationship that is implied by the Python-operator.
 
 The following Python-operators could be a good match for a Pythonic relation test between codes.
 
 | `$subsumes`-outcome | matching Python-operator | meaning                            |
 | ------------------- | ------------------------ | ---------------------------------- |
-| `equivalent`        | `==`                     | code "A" is equivelnt to code "B"  |
+| `equivalent`        | `==`                     | code "A" is equivalent to code "B" |
 | `subsumes`          | `>`                      | code "A" subsumes code "B"         |
 | `subsumed-by`       | `<`                      | code "A" is subsumed by code "B"   |
 | `not-subsumed`      | `!=`                     | code "A" and code "B" are disjoint |
 
-### Validate-code
+### CodeSystem -- `$validate-code`
 
-Checking if a code is part of a CodeSystem using the `$validate-code` API does remind a lot to checking if an item is in a list. The natural equivalent in Python is the `in` operator. An example of this API in Python would be:
+Checking if a code is part of a CodeSystem using the `$validate-code` API does remind a lot to checking if an item is in a list. This makes the `in` operator the natural equivalent to implement this in Python. An example of that would look like in code:
 
 ```python
-# indicate the terminology server that should be used to execute the operations
-with FHIRTerminologyClient("<base-url-to-fhir-terminology>") as fhir_tx_client:
-  sct = CodeSystem.from_canonical("http://snomed.info/sct", server=fhir_tx_server)
-  chronic_fever == new SCTCoding("704425001 |Chronic fever|")
+  fhir_tx = FHIRTerminologyClient("http://tx.fhir/torg/r4")
+  sct = fhir_tx.CodeSystem.get(uri="http://snomed.info/sct")
+
+  chronic_fever == SCTCoding.from_sct("704425001 |Chronic fever|")
+
   assert chronic_fever in sct, "Expected 'Chronic fever' to be a valid SNOMED-CT concept."
 ```
 
-### Lookup
+### CodeSystem -- `$lookup`
 
-A lookup is like a dictionary lookup
+A lookup operation does immediatly remind of dictionaries in Python. Using the `__getitem__` operator we can mimic dictionary syntax on our on objects.
+This would result in the followin code:
 
-> TBC
+```python
+  # create an instance of codesystem
+  fhir_tx = FHIRTerminologyClient("http://tx.fhir/torg/r4")
+  sct = fhir_tx.CodeSystem.get(uri="http://snomed.info/sct")
+  chronic_fever == new SCTCoding(code=704425001)
+
+  result = sct[chronic_fever]
+  result.display === "Chronic fever"
+```
+
+### ValueSet -- `$validate-code`
+
+This operation can be implemented identically like the `validate-code` operation on a CodeSystem.
+
+```python
+  fhir_tx = FHIRTerminologyClient("http://tx.fhir/torg/r4")
+  vs_adverse_event_outcome = fhir_tx.ValueSet["adverse-event-outcome"] # read the ValueSet given it's id
+
+  code = SCTCoding.from_sct("398056004 |Transient abnormality with full recovery|")
+  assert code in vs_adverse_event_outcome, "Expected 'Transient abnormality with full recovery' to be part of ValueSet 'AdverseEventOutcome'.
+
+```
+
+### ValueSet -- `$expand`
+
+Expansion of valueset is a very specific operation which has no obvious Python equivalent at first site. Instead of translating the operation in a Python operator, it makes more sense to create a dedicated `expand()` function for ValueSet expansion. The resulting code interface in Python ends up like this:
+
+```python
+fhir_tx = FHIRTerminologyClient("http://tx.fhir/torg/r4")
+vs_adverse_event_outcome = fhir_tx.ValueSet["adverse-event-outcome"] # read the ValueSet given it's id
+
+assert vs_adverse_event_outcome.expand().expansion is not None, "Expected an expanded valueset."
+```
+
+### FHIR Terminology server context
+
+An attentive may have noticed that there is something missing in the Python snippets above. We translated the REST operations to simple readable Python expressions. But in these Python expression we do not specify the FHIR server where those operations must be executed. Take the case of the `$subsumes`-operation: we implement the `__le__()` function, but how will we now inside that function which FHIR-server to call?
+
+To solve this issues without having to specify the FHIR server for each operation, we'll leverage context-managers.
+// When working with Python operators, we specify the operations directly without specifying the FHIR Server. In order to indicate the FHIR Terminology server that needs to execute the operations, we will leverage Python context managers:
+
+```python
+with FHIRTerminologyClient("<base-url-of-fhir-server>") as fhir_tx:
+  # ... here come the operations we want to execute
+```
+
+## Final before/after example:
+
+Let's now look how this Python client has simplified our code for an reallife terminology usecase:
+
+## Conclusion
