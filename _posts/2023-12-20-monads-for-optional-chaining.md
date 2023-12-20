@@ -120,9 +120,11 @@ There is one additional enhancement we can make to the Maybe monad to make it mo
 class Maybe:
     # ...
     def __iter__(self):
-        if self.value is None:
-            return iter([])
-        return iter(self.value)
+        if self.value is not None:
+            try:
+                yield from self.value
+            except TypeError:
+                yield self.value
 ```
 
 Easily iterate over fields with cardinality `0..*`:
