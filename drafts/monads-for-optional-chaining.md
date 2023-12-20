@@ -19,21 +19,28 @@ if patient.name is not None:
 
 To address this, we introduce the Maybe monad, a design pattern commonly used in functional programming languages. While Python lacks native optional chaining, the Maybe monad enhances code readability and reduces verbosity.
 
+A good YouTube video on monads: [What the Heck Are Monads?!
+](https://www.youtube.com/watch?v=Q0aVbqim5pE)
+
 ## Introducing the Maybe Monad
 
-The Maybe monad represents optional values, serving as a container that can hold a value or nothing. Unlike existing Python libraries like [returns][5], our implementation caters to our unique use case:
+The Maybe monad represents optional values, serving as a container that can hold a value or nothing. Unlike existing Python libraries like [returns][5], our implementation caters to our unique use case which is working with FHIR resources.
 
 ```python
 class Maybe:
     def __init__(self, value):
+        """Encapsulate a value."""
         self.value = value
 
     def __getattr__(self, name):
+        """Access nested fields."""
         if self.value is None:
             return self
+        # return a None Maybe if the attribute is not found
         return Maybe(getattr(self.value, name, None))
 
     def __getitem__(self, key):
+        """Access list items."""
         if self.value is None:
             return self
         try:
