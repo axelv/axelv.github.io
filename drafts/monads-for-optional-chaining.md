@@ -6,11 +6,12 @@ permalink: /monads-for-optional-chaining/
 
 # Optional Chaining in FHIR with Python: Making the Complex Simple
 
-Fast Healthcare Interoperability Resources (FHIR)[0] adheres to the 80/20 rule, focusing on providing 80% of the necessary data 20% of the time. While this design philosophy streamlines common use cases, working with FHIR resources becomes challenging due to the optional nature of most elements. Handling optional fields gracefully in Python, especially when nested, can make the code less readable.
+[FHIR (Fast Healthcare Interoperability Resources)][0] adheres to the 80/20 rule, focusing on providing 80% of the necessary data 20% of the time. While this design philosophy streamlines common use cases, working with FHIR resources becomes challenging due to the optional nature of most elements. Handling optional fields gracefully in Python, especially when nested, can make the code less readable.
 
 At [Tiro.health][2], we leverage [Pydantic models][3] to work with FHIR resources. Pydantic simplifies parsing and validating FHIR/JSON resources, but managing optional fields remains cumbersome. For instance, retrieving a patient's name involves multiple nested checks, leading to code like this:
 
 ```python
+patient = Patient.parse_file("FHIR-Patient-123.json") # Parse a FHIR Patient from a JSON file
 if patient.name is not None:
     if patient.name[0].given is not None:
         if len(patient.name[0].given) > 0:
@@ -19,8 +20,8 @@ if patient.name is not None:
 
 To address this, we introduce the Maybe monad, a design pattern commonly used in functional programming languages. While Python lacks native optional chaining, the Maybe monad enhances code readability and reduces verbosity.
 
-A good YouTube video on monads: [What the Heck Are Monads?!
-](https://www.youtube.com/watch?v=Q0aVbqim5pE)
+_A good YouTube video on monads: [What the Heck Are Monads?!
+](https://www.youtube.com/watch?v=Q0aVbqim5pE)_
 
 ## Introducing the Maybe Monad
 
