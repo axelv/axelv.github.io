@@ -101,11 +101,16 @@ class Maybe:
 This allows us alternative values if the field is missing:
 
 ```python
+patient = Patient.parse_file("FHIR-Patient-123.json") # Parse a FHIR Patient from a JSON file
 maybe_patient = Maybe(patient)
-print((maybe_patient.name[0].given[0].apply(" ".join) or maybe_patient.name[0].text or Maybe("No name")).value)
+print((
+    maybe_patient.name[0].given[0].apply(" ".join) or
+    maybe_patient.name[0].text or
+    Maybe("No name")
+    ).value)
 ```
 
-**Our previouse examples as a one-liner 🎉.**
+**🎉 Et voilà!** We've successfully removed the if/else statements.
 
 There is one additional enhancement we can make to the Maybe monad to make it more useful in other contexts.
 
