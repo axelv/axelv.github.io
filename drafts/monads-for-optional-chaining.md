@@ -16,6 +16,10 @@ if patient.name is not None:
     if patient.name[0].given is not None:
         if len(patient.name[0].given) > 0:
             print(" ".join(patient.name[0].given[0].value))
+        elif patient.name[0].text is not None:
+            print(patient.name[0].text)
+        else:
+            print("No name")
 ```
 
 To address this, we introduce the Maybe monad, a design pattern commonly used in functional programming languages. While Python lacks native optional chaining, the Maybe monad enhances code readability and reduces verbosity.
@@ -93,12 +97,16 @@ class Maybe:
         return self
 ```
 
-Simplify working with different representations:
+This allows us alternative values if the field is missing:
 
 ```python
 maybe_patient = Maybe(patient)
 print((maybe_patient.name[0].given[0].apply(" ".join) or maybe_patient.name[0].text or Maybe("No name")).value)
 ```
+
+**Our previouse examples as a one-liner 🎉.**
+
+There is one additional enhancement we can make to the Maybe monad to make it more useful in other contexts.
 
 #### The `__iter__` Method
 
