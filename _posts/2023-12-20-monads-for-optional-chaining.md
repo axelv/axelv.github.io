@@ -31,6 +31,7 @@ _A good YouTube video on monads: [What the Heck Are Monads?!
 ## Introducing the Maybe Monad
 
 The Maybe monad represents optional values, serving as a container that can hold a value or nothing. Unlike existing Python libraries like [returns][5], our implementation caters to our unique use case which is working with FHIR resources.
+i
 
 ```python
 class Maybe:
@@ -98,7 +99,7 @@ class Maybe:
         return self
 ```
 
-This allows us alternative values if the field is missing:
+Now we can chain multiple fields and provide a default value if none are found:
 
 ```python
 patient = Patient.parse_file("FHIR-Patient-123.json") # Parse a FHIR Patient from a JSON file
