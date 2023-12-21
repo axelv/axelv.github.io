@@ -3,6 +3,7 @@ title: Tech Reflections.
 description: A collection of posts on the technical stuff I'm currently working with.
 author: Axel Vanraes
 future: false
+markdown: GFM
 show_drafts: false
 plugins:
   - jekyll-feed
