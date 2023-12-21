@@ -83,11 +83,11 @@ class Patient:
 -    contained: Optional_[List_["AnyResource"]] = None
 ```
 
-This change, though breaking, was acceptable for our use case as we always specify contained resources through custom models if needed.
+This change, though breaking, was acceptable for our use case as we always specify contained resources through custom models.
 
 ### Reducing model build time
 
-Pydantic v2 takes more time to build models, sacrificing some loading time for improved parsing and validation performance. However, loading times of almost 40 seconds were unacceptable. To address this, I made the following improvements:
+Pydantic v2 takes more time to build models, sacrificing some loading time for drastically improved parsing and validation performance. However, loading times of almost 40 seconds were unacceptable. Is 700+ models already testing the limits of Pydantic? I hope not. In order to address this, I made the following improvements:
 
 1. Parsed extensions and modifier extensions as dicts:
 
@@ -103,6 +103,8 @@ Pydantic v2 takes more time to build models, sacrificing some loading time for i
    +    modifierExtension: Optional_[Dict_[str, Any]] = None
    ```
 
+   If we use extensions, we always specify them through custom models. So this change was acceptable.
+
 2. Parsed `Bundle.entry.resource` as a dict:
 
    ```diff
@@ -110,9 +112,11 @@ Pydantic v2 takes more time to build models, sacrificing some loading time for i
    +    resource: Optional_[Dict_[str, Any]] = None
    ```
 
+   This change was acceptable as we always specify the resource type through custom models.
+
 ## What's next?
 
-The manual migration revealed pain points that need addressing. Some improvements for the `fhir-py-types` library include
+The manual migration revealed pain points that need addressing. Some improvements befor migrating the `fhir-py-types` library include
 
 1. Splitting models into separate files to reduce loading and build time, making maintenance more manageable. The assumption here is that each service only needs a subset of models.
 

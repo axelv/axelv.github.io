@@ -23,7 +23,7 @@ if patient.name is not None:
             print("No name")
 ```
 
-To address this, we introduce the Maybe monad, a design pattern commonly used in functional programming languages. While Python lacks native optional chaining, the Maybe monad enhances code readability and reduces verbosity.
+To address this, we introduce the Maybe monad, a design pattern commonly used in _functional programming_ languages. While Python lacks native optional chaining, the Maybe monad enhances code readability and reduces verbosity.
 
 _A good YouTube video on monads: [What the Heck Are Monads?!
 ](https://www.youtube.com/watch?v=Q0aVbqim5pE)_
