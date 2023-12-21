@@ -118,7 +118,7 @@ Pydantic v2 takes more time to build models, sacrificing some loading time for d
 
    This change was acceptable as we always specify the resource type through custom models.
 
-Loading times were reduced to _5 seconds_, a significant improvement. However, it's still not ideal. Since we only use a subset of models in each service, we could split the models into separate files. But this is a topic for another time.
+Loading times were reduced to **5 seconds**, a significant improvement. However, it's still not ideal. Since we only use a subset of models in each service, we could split the models into separate files. But this is a topic for another time.
 
 ## What's next?
 
