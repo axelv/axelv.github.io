@@ -1,5 +1,5 @@
 ---
-title: "Optional Chaining in FHIR with Python: Making the Complex Simple"
+title: "Traversing optional FHIR Elements in Python: Making the Complex Simple"
 layout: post
 author: "Axel Vanraes"
 categories:
