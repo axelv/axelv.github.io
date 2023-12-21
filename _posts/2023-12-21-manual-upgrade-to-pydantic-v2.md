@@ -40,7 +40,7 @@ Unfortunately, it wasn't that simple...
 
 ### Fixing errors
 
-However, running tests uncovered some errors. Loading the module containing models resulted in a RecursionError:
+However, running tests uncovered some errors. Loading the module containing models resulted in a **RecursionError**:
 
 ```bash
 Traceback (most recent call last):
@@ -91,7 +91,7 @@ This change, though breaking, was acceptable for our use case as we always speci
 
 ### Reducing model build time
 
-Pydantic v2 takes more time to build models, sacrificing some loading time for drastically improved parsing and validation performance. However, loading times of almost 40 seconds were unacceptable. Is 700+ models already testing the limits of Pydantic? I hope not. In order to address this, I made the following improvements:
+Pydantic v2 takes more time to build models, sacrificing some loading time for drastically improved parsing and validation performance. However, loading times of almost **40 seconds** were unacceptable. Is 700+ models already testing the limits of Pydantic? I hope not. In order to address this, I made the following improvements:
 
 1. Parsed extensions and modifier extensions as dicts:
 
