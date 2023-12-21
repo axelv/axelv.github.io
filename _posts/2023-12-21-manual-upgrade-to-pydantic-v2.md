@@ -9,7 +9,7 @@ categories:
 
 When dealing with [FHIR][1] in Python, having typed models to represent resources is essential. FHIR resources are nested structures with field names (officially FHIR Elements) that aren't always consistent across resource types. Handling them with dictionaries can be tricky and error-prone. At [Tiro.health][2], we leverage [Pydantic models][3] to streamline the process of working with FHIR resources. Pydantic simplifies parsing and validating FHIR/JSON resources and provides valuable type hints for IDEs.
 
-Recently, Pydantic released [version 2][4], introducing significant improvements. The library's internals were rewritten in Rust, enhancing speed and memory efficiency. Observing parsing as a bottleneck in our backend services, I decided to explore the migration of our models to Pydantic v2.
+Recently, Pydantic released [version 2][4], introducing significant improvements. The library's internals were rewritten in Rust, enhancing speed and memory efficiency. Observing validation as a bottleneck in our backend services, I decided to explore the migration of our models to Pydantic v2.
 
 ## How do we generate our models?
 
