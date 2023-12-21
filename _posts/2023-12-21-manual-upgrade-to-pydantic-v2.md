@@ -118,15 +118,15 @@ Pydantic v2 takes more time to build models, sacrificing some loading time for d
 
    This change was acceptable as we always specify the resource type through custom models.
 
-Loading times were reduced to 5 seconds, a significant improvement. However, it's still not ideal. Since we only use a subset of models in each service, we could split the models into separate files. But this is a topic for another time.
+Loading times were reduced to _5 seconds_, a significant improvement. However, it's still not ideal. Since we only use a subset of models in each service, we could split the models into separate files. But this is a topic for another time.
 
 ## What's next?
 
 The manual migration revealed pain points that need addressing. Some improvements befor migrating the `fhir-py-types` library include
 
-1. Splitting models into separate files to reduce loading and build time, making maintenance more manageable. The assumption here is that each service only needs a subset of models.
+1. _Splitting models into separate files_ to reduce loading and build time, making maintenance more manageable. The assumption here is that each service only needs a subset of models.
 
-2. Specifying model config in the BaseModel to avoid repeating the migration for each resource type.
+2. Specifying _model config in the BaseModel_ to avoid repeating the migration for each resource type.
 
 [1]: https://www.hl7.org/fhir/ "Fast Healthcare Interoperability Resources"
 [2]: https://tiro.health "Tiro.health"
