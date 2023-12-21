@@ -36,9 +36,11 @@ Following Samuel Colvin and team's migration guide, I made the following changes
    +    model_config = ConfigDict(extra="forbid", validate_assignment=True)
    ```
 
+Unfortunately, it wasn't that simple...
+
 ### Fixing errors
 
-However, running tests uncovered numerous errors. Loading the module containing models resulted in a RecursionError:
+However, running tests uncovered some errors. Loading the module containing models resulted in a RecursionError:
 
 ```bash
 Traceback (most recent call last):
