@@ -1,5 +1,5 @@
 ---
-title: "Migrate generated FHIR models to Pydantic v2"
+title: "Migrating to Pydantic v2: A Journey with FHIR Models"
 author: "Axel Vanraes"
 categories:
   - "FHIR"
@@ -7,27 +7,27 @@ categories:
   - "Pydantic"
 ---
 
-When working with [FHIR][1] in Python, you definitly need typed models to represent your resources. FHIR resources are nested structures with field names (FHIR Elements officially) that are not always consistent accross resource types.So working with dictionaries is very tricky and error prone. At [Tiro.health][2], we use [Pydantic models][3] to work with FHIR resources. Pydantic simplifies parsing and validating FHIR/JSON resources and offers type hints for IDEs.
+When dealing with [FHIR][1] in Python, having typed models to represent resources is essential. FHIR resources are nested structures with field names (officially FHIR Elements) that aren't always consistent across resource types. Handling them with dictionaries can be tricky and error-prone. At [Tiro.health][2], we leverage [Pydantic models][3] to streamline the process of working with FHIR resources. Pydantic simplifies parsing and validating FHIR/JSON resources and provides valuable type hints for IDEs.
 
-Recently, Pydantic released [version 2][4] with a lot of improvements. They rewrote the internals of the library in Rust, which makes it faster and more memory efficient. We've seen that parsing in our backend services becomes a bottleneck, so I wanted to see what it would take to upgrade our models to Pydantic v2.
+Recently, Pydantic released [version 2][4], introducing significant improvements. The library's internals were rewritten in Rust, enhancing speed and memory efficiency. Observing parsing as a bottleneck in our backend services, I decided to explore the migration of our models to Pydantic v2.
 
 ## How do we generate our models?
 
-In 2021, when we launched the company, we used to create our models by hand. We had a few models and we were not sure if we would stick with Pydantic. But as we started to work with more resources, we quickly realized that we needed a better solution. We started to look at the existing libraries, found [`fhir.resources`][5] but experienced a [lot of issues with their types](https://github.com/nazrulworld/fhir.resources/issues/60) which is the main feature we were looking for. Last year, we encountered [`fhir-py-types`][6] from [beda.software](https://beda.software/). They took a different approach and built a library that generates Pydantic models from the FHIR specification. We started to use it and it worked great.
-
-The result that `fhir-py-types` generate is a single file with all the models. Here is [an example](https://raw.githubusercontent.com/Tiro-health/FHIRkit/v1.0/fhirkit/r5.py). Now the challenge is to migrate this file to Pydantic v2.
+In 2021, during our company launch, we initially crafted models manually. However, as we expanded our work with more resources, we realized the need for a better solution. After exploring existing libraries and facing issues with types in [`fhir.resources`][5], we discovered [`fhir-py-types`][6] from [beda.software](https://beda.software/). This library generates Pydantic models from the FHIR specification, providing a single file with all models. The challenge now is migrating this file to Pydantic v2.
 
 ## Migrating to Pydantic v2 by hand
 
-Samuel Colvin and team have made an excellent migration guide. Following their guide I had to make the following changes:
+Following Samuel Colvin and team's migration guide, I made the following changes:
 
-1. Replace `update_forward_ref()` with `model_rebuild()` for all the resources
-   ```diff
+1. Replaced `update_forward_ref()` with `model_rebuild()` for all resources:
+
+   ```python
    -Patient.update_forward_refs()
    +Patient.model_rebuild()
    ```
-2. Move model config from the Metaclass arguments to the `model_config` field.
-   ```diff
+
+2. Moved model config from Metaclass arguments to the `model_config` field:
+   ```python
    -class Patient(BaseModel, extra=Extra.forbid, validate_assignment=True):
    +class Patient(BaseModel):
    +    model_config = ConfigDict(extra="forbid", validate_assignment=True)
@@ -35,15 +35,7 @@ Samuel Colvin and team have made an excellent migration guide. Following their g
 
 ### Fixing errors
 
-Initially, I thought that this would be enough to migrate the models 🙈. But when I tried to run the tests, I got a lot of errors.
-
-Just loading the module containing the models failed with the following error:
-
-```bash
-python r4.py
-```
-
-**Error traceback:**
+However, running tests uncovered numerous errors. Loading the module containing models resulted in a RecursionError:
 
 ```bash
 Traceback (most recent call last):
@@ -81,58 +73,48 @@ Traceback (most recent call last):
 RecursionError: maximum recursion depth exceeded in __instancecheck__
 ```
 
-After a lot of try and error I found the following workaround:
+After some trial and error, a workaround was found:
 
-```diff
+```python
 + from typing import Any
 class Patient:
 +    contained: Optional_[List_["Any"]] = None
 -    contained: Optional_[List_["AnyResource"]] = None
 ```
 
-> **Note:** This is a breaking change. But in our case, we always specify the contained resources by creating custom models. So we can easily migrate to the new type.
+This change, though breaking, was acceptable for our use case as we always specify contained resources through custom models if needed.
 
-I'm not sure why this works, but it does. Probably, Pydantic v2 is doing more type checking when building the models compared to v1. Give we have **700+ models with recursive references**, it's not unthinkable that we hit Python's recursion limit.
+### Reducing model build time
 
-### Reducing model build time.
+Pydantic v2 takes more time to build models, sacrificing some loading time for improved parsing and validation performance. However, loading times of almost 40 seconds were unacceptable. To address this, I made the following improvements:
 
-It is known that Pydantic v2 takes a bit more time to build the models in favor of faster parsing and validation performance. But when I tried to load the models, it took way more time.
-After inserting some log lines, I noticed that **it takes almost 40 seconds to load the models ⚠️**. This is a huge regression compared to Pydantic v1 which takes barely 1 second.
+1. Parsed extensions and modifier extensions as dicts:
 
-Loading times of 40 seconds is of course not acceptable especially since we have services that scale to zero and need to load the models on startup. So I started to look for ways to reduce the loading time. I found the following improvements:
-
-1. Parse extensions as a dict
-
-   ```diff
+   ```python
    -    extension: Optional_[List_[Extension]] = None
    +    extension: Optional_[Dict_[str, Any]] = None
    ```
 
    and
 
-   ```diff
+   ```python
    -    modifierExtension: Optional_[List_[Extension]] = None
    +    modifierExtension: Optional_[Dict_[str, Any]] = None
    ```
 
-   > **Note:** This is a breaking change. But in our case, we always specify the extensions by creating custom models. So we can easily migrate to the new type.
-
-2. Parse `Bundle.entry.resource` as a dict
-
-   ```diff
+2. Parsed `Bundle.entry.resource` as a dict:
+   ```python
    -    resource: Optional_[AnyResource] = None
    +    resource: Optional_[Dict_[str, Any]] = None
    ```
 
-   > **Note:** This is a breaking change. But most of the time we don't use Bundles without knowning the subset of resources we can expect. So we can easily migrate to the new type.
-
 ## What's next?
 
-The manual migration definitely did learn where the pain points are. It will be important to refactor the `fhir-py-types` library around these pain points. I'm thinking about the following improvements:
+The manual migration revealed pain points that need addressing. Some improvements for the `fhir-py-types` library include
 
-1. Split the models in seperate files. This will reduce the model loading and build time and make it easier to maintain the models. I think it is fairly straightforward to bundle all the FHIR Datatypes in a single file and have a seperate file for each resource type. But what to do with the union type `AnyResource` ?
+1. Splitting models into separate files to reduce loading and build time, making maintenance more manageable. The assumption here is that each service only needs a subset of models.
 
-2. Specify model config in the BaseModel so we don't have to repeat the migration for each resource type.
+2. Specifying model config in the BaseModel to avoid repeating the migration for each resource type.
 
 [1]: https://www.hl7.org/fhir/ "Fast Healthcare Interoperability Resources"
 [2]: https://tiro.health "Tiro.health"
