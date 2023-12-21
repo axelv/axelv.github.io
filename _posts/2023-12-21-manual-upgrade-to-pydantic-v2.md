@@ -21,14 +21,14 @@ Following Samuel Colvin and team's migration guide, I made the following changes
 
 1. Replaced `update_forward_ref()` with `model_rebuild()` for all resources:
 
-   ```python
+   ```diff
    -Patient.update_forward_refs()
    +Patient.model_rebuild()
    ```
 
 2. Moved model config from Metaclass arguments to the `model_config` field:
 
-   ```python
+   ```diff
    -class Patient(BaseModel, extra=Extra.forbid, validate_assignment=True):
    +class Patient(BaseModel):
    +    model_config = ConfigDict(extra="forbid", validate_assignment=True)
@@ -76,7 +76,7 @@ RecursionError: maximum recursion depth exceeded in __instancecheck__
 
 After some trial and error, a workaround was found:
 
-```python
+```diff
 + from typing import Any
 class Patient:
 +    contained: Optional_[List_["Any"]] = None
@@ -91,20 +91,21 @@ Pydantic v2 takes more time to build models, sacrificing some loading time for i
 
 1. Parsed extensions and modifier extensions as dicts:
 
-   ```python
+   ```diff
    -    extension: Optional_[List_[Extension]] = None
    +    extension: Optional_[Dict_[str, Any]] = None
    ```
 
    and
 
-   ```python
+   ```diff
    -    modifierExtension: Optional_[List_[Extension]] = None
    +    modifierExtension: Optional_[Dict_[str, Any]] = None
    ```
 
 2. Parsed `Bundle.entry.resource` as a dict:
-   ```python
+
+   ```diff
    -    resource: Optional_[AnyResource] = None
    +    resource: Optional_[Dict_[str, Any]] = None
    ```
