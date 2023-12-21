@@ -27,6 +27,7 @@ Following Samuel Colvin and team's migration guide, I made the following changes
    ```
 
 2. Moved model config from Metaclass arguments to the `model_config` field:
+
    ```python
    -class Patient(BaseModel, extra=Extra.forbid, validate_assignment=True):
    +class Patient(BaseModel):
