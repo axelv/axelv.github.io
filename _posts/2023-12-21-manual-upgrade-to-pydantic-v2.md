@@ -13,7 +13,7 @@ Recently, Pydantic released [version 2][4], introducing significant improvements
 
 ## How do we generate our models?
 
-In 2021, during our company launch, we initially crafted models manually. However, as we expanded our work with more resources, we realized the need for a better solution. After exploring existing libraries and facing issues with types in [`fhir.resources`][5], we discovered [`fhir-py-types`][6] from [beda.software](https://beda.software/). This library generates Pydantic models from the FHIR specification, providing a single file with all models. An open-source example of this file can be found [here](https://github.com/Tiro-health/FHIRkit/blob/v1.0/fhirkit/r5.py)
+In 2021, during our company launch, we initially crafted models manually. However, as we expanded our work with more resources, we realized the need for a better solution. After exploring existing libraries and facing issues with types in [`fhir.resources`][5], we discovered [`fhir-py-types`][6] from [beda.software](https://beda.software/). This library generates Pydantic models from the FHIR specification, providing a single file with all models. An open-source example of such a generated file can be found [here](https://github.com/Tiro-health/FHIRkit/blob/v1.0/fhirkit/r5.py)
 
 The challenge now is migrating this file to Pydantic v2.
 
