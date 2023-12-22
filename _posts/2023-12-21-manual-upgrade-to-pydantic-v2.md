@@ -38,9 +38,10 @@ Following Samuel Colvin and team's migration guide, I made the following changes
 
 Unfortunately, it wasn't that simple...
 
-### Fixing errors
+### Python's maximum recursion depth
 
-However, running tests uncovered some errors. Loading the module containing models resulted in a **RecursionError**:
+Due to the large number of models (700+), we hit Python's maximum recursion depth.
+This can easily be tested by simply running the module containing models. This results in a **RecursionError**:
 
 ```bash
 Traceback (most recent call last):
@@ -78,7 +79,10 @@ Traceback (most recent call last):
 RecursionError: maximum recursion depth exceeded in __instancecheck__
 ```
 
-After some trial and error, a workaround was found:
+It's hard to pinpoint the exact cause of this error. However, it seems to be related to the `AnyResource` type. This type is used to represent any FHIR resource. It's used in the `contained` of every resource and hence is the source of the recursion.
+Manually reducing the number of models in `AnyResource` to a subset of resources, makes the error disappear. This is a good indication that the number of models is the cause of the error.
+
+After some trial and error, we came up with the following solution:
 
 ```diff
 + from typing import Any
@@ -91,7 +95,7 @@ This change, though breaking, was acceptable for our use case as we always speci
 
 ### Reducing model build time
 
-Pydantic v2 takes more time to build models, sacrificing some loading time for drastically improved parsing and validation performance. However, loading times of almost **40 seconds** were unacceptable. Is 700+ models already testing the limits of Pydantic? I hope not. In order to address this, I made the following improvements:
+Pydantic v2 takes more time to build models, sacrificing some loading time for drastically improved parsing and validation performance. However, loading times of almost **40 seconds** is unacceptable. I hope Pydantic is built with larger projects in mind and will improve this in the future. At least, we found another workaround to reduce loading times:
 
 1. Parsed extensions and modifier extensions as dicts:
 
@@ -122,7 +126,7 @@ Loading times were reduced to **5 seconds**, a significant improvement. However,
 
 ## What's next?
 
-The manual migration revealed pain points that need addressing. Some improvements befor migrating the `fhir-py-types` library include
+The manual migration revealed pain points that need addressing. Some improvements to the `fhir-py-types` library before migrating include
 
 1. **Splitting models into separate files** to reduce loading and build time, making maintenance more manageable. The assumption here is that each service only needs a subset of models.
 
