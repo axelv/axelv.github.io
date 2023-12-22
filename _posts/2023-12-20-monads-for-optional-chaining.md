@@ -140,7 +140,7 @@ for given in Maybe(patient).name[0].given:
 Drawing parallels with [FHIRPath][8], a powerful expression language for traversing FHIR resources, the Maybe monad shares similarities:
 
 1. Both use an _empty collection_ or `None` to represent absence of values.
-2. Facilitate fluent access and application of functions to nested fields without explicit checks.
+2. Facilitate [fluent](https://en.m.wikipedia.org/wiki/Fluent_interface) access and application of functions to nested fields without explicit checks.
 3. Allow iteration over fields with cardinality `0..*` without checking for presence.
 
 While FHIRPath offers more advanced features, combining the Maybe monad with FHIRPath might unlock additional power.
