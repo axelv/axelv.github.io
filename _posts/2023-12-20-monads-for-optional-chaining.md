@@ -103,10 +103,9 @@ Now we can chain multiple fields and provide a default value if none are found:
 
 ```python
 patient = Patient.parse_file("FHIR-Patient-123.json") # Parse a FHIR Patient from a JSON file
-maybe_patient = Maybe(patient)
 print((
-    maybe_patient.name[0].given[0].apply(" ".join) or
-    maybe_patient.name[0].text or
+    Maybe(patient).name[0].given[0].apply(" ".join) or
+    Maybe(patient).name[0].text or
     Maybe("No name")
     ).value)
 ```
