@@ -103,10 +103,9 @@ Now we can chain multiple fields and provide a default value if none are found:
 
 ```python
 patient = Patient.parse_file("FHIR-Patient-123.json") # Parse a FHIR Patient from a JSON file
-maybe_patient = Maybe(patient)
 print((
-    maybe_patient.name[0].given[0].apply(" ".join) or
-    maybe_patient.name[0].text or
+    Maybe(patient).name[0].given[0].apply(" ".join) or
+    Maybe(patient).name[0].text or
     Maybe("No name")
     ).value)
 ```
@@ -140,7 +139,7 @@ for given in Maybe(patient).name[0].given:
 Drawing parallels with [FHIRPath][8], a powerful expression language for traversing FHIR resources, the Maybe monad shares similarities:
 
 1. Both use an _empty collection_ or `None` to represent absence of values.
-2. Facilitate fluent access and application of functions to nested fields without explicit checks.
+2. Facilitate [fluent](https://en.m.wikipedia.org/wiki/Fluent_interface) access and application of functions to nested fields without explicit checks.
 3. Allow iteration over fields with cardinality `0..*` without checking for presence.
 
 While FHIRPath offers more advanced features, combining the Maybe monad with FHIRPath might unlock additional power.

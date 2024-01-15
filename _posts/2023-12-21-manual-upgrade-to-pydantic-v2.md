@@ -40,8 +40,8 @@ Unfortunately, it wasn't that simple...
 
 ### Python's maximum recursion depth
 
-Due to the large number of models (700+), we hit Python's maximum recursion depth.
-This can easily be tested by simply running the module containing models. This results in a **RecursionError**:
+Due to the large number of models (700+), we hit Python's maximum recursion depth (which is set to 1000).
+This can easily be tested by simply running the module containing the models which results in a **RecursionError**:
 
 ```bash
 Traceback (most recent call last):
@@ -78,7 +78,7 @@ Traceback (most recent call last):
        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RecursionError: maximum recursion depth exceeded in __instancecheck__
 ```
-
+We could increase the limit, but this seems more like a structural issue that should be fixed at the root.
 It's hard to pinpoint the exact cause of this error. However, it seems to be related to the `AnyResource` type. This type is used to represent any FHIR resource. It's used in the `contained` of every resource and hence is the source of the recursion.
 Manually reducing the number of models in `AnyResource` to a subset of resources, makes the error disappear. This is a good indication that the number of models is the cause of the error.
 
