@@ -8,6 +8,8 @@ categories:
   - "music"
 ---
 
+Demo: [https://whatpitchisthis.vercel.app/](https://whatpitchisthis.vercel.app/)
+
 In between coding for healthcare, I like to unwind by playing jazz on the piano. This time I found and even more exciting project combining engineering and music: building a simple pitch detector in React. This is also an excellent opportunity to explore the intricacies of audio processing in the browser.
 
 # Setting up the project
