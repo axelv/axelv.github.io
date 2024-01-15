@@ -175,9 +175,9 @@ Now equipped with the `usePitchDetector` hook, we can delve into the pitch detec
 
 ### Auto-correlation
 
-Finding the fundamental frequency is a matter of calculating the periodicity in the audio signal or in simple word: finding out how much time it takes before the signal repeats itself.
+At the heart of finding the fundamental frequency lies the task of discerning the periodicity within the audio signal—simply put, understanding how much time elapses before the signal repeats itself.
 
-The auto-correlation function calculates the similarity between the signal and a shifted version of itself, pinpointing periodicity in the signal:
+The auto-correlation function acts as our guide, measuring the resemblance between the original signal and its shifted versions. This process becomes instrumental in isolating the periodic patterns within the signal:
 
 ```ts
 /*``
