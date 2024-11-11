@@ -1,5 +1,3 @@
-# Exploring Template based extraction
-
 
 ## Use cases
 
