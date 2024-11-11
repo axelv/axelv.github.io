@@ -24,7 +24,7 @@ item:
     text: "Additional procedures"
     type: choice
     repeats: true
-    answerOptions:
+    answerOption:
       - valueCoding:
           display: "Pelvic lymph node dissection"
           code: "PLND"
@@ -41,12 +41,12 @@ item:
       - linkId: laterality
         text: "Laterality"
         type: choice
-        enabledWhen:
-          - question: "#additional-procedures"
+        enableWhen:
+          - question: "additional-procedures"
             operator: =
             answerCoding:
               code: "PLND"
-        answerOptions:
+        answerOption:
           - valueCoding:
               display: "Left"
               code: "L"
@@ -115,7 +115,7 @@ contained:
                   - url: http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extractTemplateValue
                     valueString: "answer.valueCoding"
           partOf:
-            - reference: #ralp
+            - reference: "#ralp"
           bodySite:
             - coding:
                 - extension:
