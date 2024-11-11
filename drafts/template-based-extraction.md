@@ -3,9 +3,9 @@
 
 ## Use cases
 
-1. Sugery report Robotic-assisted laparoscopic prostatectomy
+### 1. Sugery report Robotic-assisted laparoscopic prostatectomy
 
-A second use-case is a surgery report for a robotic-assisted laparoscopic prostatectomy (RALP). The template fragement below is used to report the surgery details and specifically the additional procedures that were performed during the surgery.
+A first use-case is a surgery report for a robotic-assisted laparoscopic prostatectomy (RALP). The Questionnaire below is actually a simplified fragement of the real template. It is used to report the surgery details and specifically the additional procedures that were performed during the surgery.
 
 
 Questionnaire:
@@ -120,9 +120,9 @@ contained:
 ```
 
 
-2.. Repeating cancer stagings
+### 2. Repeating cancer stagings
 
-A first complex use-case to explore is the staging of lung cancer. The reduced template below is used for MDT-meetings where the staging of lung cancer is discussed. The template is used to report the mulitple presentations of the same patient over time.
+A second more complex use-case to explore is the staging of lung cancer. The reduced template below is used for MDT-meetings where the staging of lung cancer is discussed. The template is used to report the mulitple presentations of the same patient over time.
 
 Questionnaire:
 
