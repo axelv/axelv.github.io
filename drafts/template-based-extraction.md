@@ -62,6 +62,7 @@ extension:
       reference: "#extraction-bundle"
 contained:
   - resourceType: Bundle
+    id: extraction-bundle
     type: transaction
     entry:
       - fullUrl: "urn:uuid:ralp"
