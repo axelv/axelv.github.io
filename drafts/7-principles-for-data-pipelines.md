@@ -1,16 +1,16 @@
 ---
 title: ""
 layout: post
-permalink: /drafts/principles-for-data-scientists
+permalink: /drafts/date-pipelines-pure-python
 ---
 
-# Principles for data dipelines
+# Date Pipelines in Pure Python
 
 Data pipelines are hard. Like every piece of software they fail, especially when the pipeline is in early development or the environment is changing rapidly. And on top of that development iterations are slow because of the execution time the pipeline takes. To speed up things most data pipelines make use of some form of multiprocessing which makes them even harder debug. To tackle these issues we want the be able to reëxecute parts of a data pipeline. This means (1) splitting the pipeline in pieces with a clear signature that enables us to re-run them seperatly and (2) persisting intermediate results so we can re-execute that part of the pipeline where things went wrong.
 
 ## Seperation in idempotent stateless tasks with intermediate persistence
 
-The obvious thing to do is splitting the pipeline in pieces using functions. It's the first level of abstraction to reach for when trying seperate concerns. It makes pieces of your data processing reuseable and more readable.
+The obvious thing to do is splitting the pipeline in pieces using functions. It's the first level of abstraction to reach for when trying seperate concerns. It makes pieces of your data processing reuseable and more readable. It also 
 But data pipelines as written as functions have one major problem: they don't differentiate between parameters and data input. In order to make the signature more explicit we'll use _dataclasses_. This allows us to seperate the parameters from the data input:
 
 ```python
