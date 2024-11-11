@@ -1,10 +1,16 @@
-
+---
+title: "Template-based extraction "
+author: "Axel Vanraes"
+categories:
+  - "FHIR"
+  - "SDC"
+  - "forms"
+---
 ## Use cases
 
 ### 1. Sugery report Robotic-assisted laparoscopic prostatectomy
 
 A first use-case is a surgery report for a robotic-assisted laparoscopic prostatectomy (RALP). The Questionnaire below is actually a simplified fragement of the real template. It is used to report the surgery details and specifically the additional procedures that were performed during the surgery.
-
 
 Questionnaire:
 
