@@ -2,14 +2,15 @@
 title: "Registries on FHIR: stop reinventing the form"
 layout: post
 author: "Axel Vanraes"
-published: false
+permalink: /preview/7160eebc955e/
+sitemap: false
 categories:
   - "FHIR"
   - "Interoperability"
   - "Registries"
 ---
 
-![Stop Redoing the Form. Build Belgian Registries on FHIR.](/_posts/registries-on-fhir.png)
+![Stop Redoing the Form. Build Belgian Registries on FHIR.](/assets/registries-on-fhir.png)
 
 In Belgium we run a lot of ad-hoc registries. National ones like the Belgian Cancer Registry and QERMID, but also regional and network-level initiatives like VZNKUL FLIPR. Each one comes with its own data dictionary, its own care pathway, sometimes a set of quality indicators, and almost always a form that needs to land inside the clinician's workflow.
 
