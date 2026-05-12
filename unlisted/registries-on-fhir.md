@@ -12,11 +12,13 @@ categories:
 
 ![Stop Redoing the Form. Build Belgian Registries on FHIR.](/assets/registries-on-fhir.png)
 
-In Belgium we run a lot of ad-hoc registries. National ones like the Belgian Cancer Registry and QERMID, but also regional and network-level initiatives like VZNKUL FLIPR. Each one comes with its own data dictionary, its own care pathway, sometimes a set of quality indicators, and almost always a form that needs to land inside the clinician's workflow.
+In Belgium we run a lot of ad-hoc registries. National ones like the Belgian Cancer Registry and QERMID, and a long tail of regional and network-level initiatives. Each one comes with its own data dictionary, its own care pathway, sometimes a set of quality indicators and a moment of clinical validation that today almost always shows up as a standalone form inside the clinician's workflow.
 
 That form is where most of the hidden cost lives.
 
-To make a registry actually work in practice, someone has to translate the data dictionary into a form, fit that form to how clinicians already work, and then wire it into the EHR. Automation can soften the administrative burden, but the form itself stays a prerequisite: it's where clinical validation happens. Today every registry redoes that work from scratch. New schema, new form, new integration, new transmission pipeline, new version management, all quietly absorbed by application managers and data analysts in the hospitals.
+Most of the data a registry asks for already lives in the EHR. The reason teams keep building standalone forms isn't that the data is missing, it's that today's EHRs make it painful to find it, export it, and bind it to a registry's schema. So the work gets pushed to the clinician: a new form, duplicate registration, and a transmission pipeline owned by hospital data analysts.
+
+But even when the data *is* there, someone still has to validate it clinically and add the context-specific bits a chart review can't infer. So the form-shaped surface doesn't disappear, it just shrinks. The question is whether every registry rebuilds that surface from scratch, or whether hospitals can build it once on top of infrastructure they already have.
 
 And this is happening exactly when hospitals are investing heavily in FHIR.
 
@@ -46,8 +48,9 @@ Both are early drafts, but they already show the same three benefits:
 1. **Human and machine readable data dictionaries** out of the box.
 2. **Reuse of existing data capture infrastructure** that hospitals are already investing in.
 3. **Seamless exchange of form definitions**, so the form follows the schema, not the other way around.
+4. **Pre-population from existing FHIR data**, turning the form from a duplicate-entry chore into a thin validation-and-augmentation layer over data the EHR already holds.
 
-The simple truth: every new registry doesn't need new infrastructure. It needs a published StructureDefinition, a Questionnaire bound to it, and a hospital that already speaks FHIR.
+Conclusion: every new registry doesn't need a new form built from zero. It needs a published StructureDefinition, a Questionnaire bound to it, and an EHR that can serve the data it already holds.
 
 We have most of the pieces. We just need to stop redoing the form.
 
