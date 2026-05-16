@@ -6,7 +6,7 @@ categories:
   - "FHIR"
   - "HealthTech"
   - "Interoperability"
-  - "Registries",
+  - "Registries"
   - "StructuredDataCapture"
 ---
 
