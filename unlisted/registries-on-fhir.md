@@ -10,7 +10,7 @@ categories:
   - "Registries"
 ---
 
-![Stop Redoing the Form. Build Belgian Registries on FHIR.](/assets/registries-on-fhir.png)
+![Stop Redoing the Form. Build Belgian Registries on FHIR.](/assets/registries-on-fhir-wallpaper.png)
 
 In Belgium we run a lot of ad-hoc registries. National ones like the Belgian Cancer Registry and QERMID, and a long tail of regional and network-level initiatives. Each one comes with its own data dictionary, its own care pathway, sometimes a set of quality indicators and a moment of clinical validation that today almost always shows up as a standalone form inside the clinician's workflow.
 
