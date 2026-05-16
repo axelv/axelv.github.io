@@ -2,8 +2,6 @@
 title: "Registries on FHIR: stop reinventing the form"
 layout: post
 author: "Axel Vanraes"
-permalink: /preview/7160eebc955e/
-sitemap: false
 categories:
   - "FHIR"
   - "Interoperability"
