@@ -4,8 +4,10 @@ layout: post
 author: "Axel Vanraes"
 categories:
   - "FHIR"
+  - "HealthTech"
   - "Interoperability"
   - "Registries"
+  - "StructuredDataCapture"
 ---
 
 ![Stop Redoing the Form. Build Belgian Registries on FHIR.](/assets/registries-on-fhir-wallpaper.png)
@@ -53,5 +55,3 @@ Conclusion: every new registry doesn't need a new form built from zero. It needs
 We have most of the pieces. We just need to stop redoing the form.
 
 *Curious which Belgian registries you'd like to see modeled next. Drop a name in the comments.*
-
-#FHIR #HealthTech #Interoperability #DigitalHealth #StructuredDataCapture #Registries
