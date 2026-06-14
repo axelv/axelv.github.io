@@ -34,7 +34,7 @@ The shape that fell out of this is a worklist, and it's almost boringly standard
 
 The hospital opens a case (a `Condition`). The registry exposes a `Task` on a worklist. The hospital posts the `QuestionnaireResponse`; the registry validates it asynchronously and posts back an `OperationOutcome`, the feedback the clinician sees. No new protocol, no vendor-specific mapping layer: a worklist the hospital already knows how to read, expressed in FHIR it already speaks.
 
-And it ran end-to-end. In the demo the worklist is just the doctor's **inbox**: open a task and the form renders straight from the FHIR `Questionnaire` (via the Tiro Web SDK), so the artifact that *defines* the form is the one that *draws* it. We mocked the registry's side — the Belgian Cancer Registry couldn't be in the room — but that's rather the point: the shared FHIR contract let us build both ends without them.
+And it ran end-to-end. In the demo the worklist is just the doctor's **inbox**: open a task and the form renders straight from the FHIR `Questionnaire` (via the Tiro Web SDK), so the artifact that *defines* the form is the one that *draws* it.
 
 ## Why a `Task`, and not just an operation
 
